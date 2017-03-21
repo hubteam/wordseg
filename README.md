@@ -1,1 +1,1 @@
-Chinese word segmentation.
+Chinese word segmentation created on 2017-03-21 by Liu Xiaofeng.
