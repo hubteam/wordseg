@@ -1,7 +1,13 @@
 package com.kidden.tc.wordseg.maxent;
 
 import com.kidden.tc.wordseg.WordSegmenter;
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -17,6 +23,7 @@ import opennlp.tools.ml.model.Event;
 import opennlp.tools.ml.model.MaxentModel;
 import opennlp.tools.ml.model.SequenceClassificationModel;
 import opennlp.tools.util.ObjectStream;
+import opennlp.tools.util.PlainTextByLineStream;
 import opennlp.tools.util.Sequence;
 import opennlp.tools.util.SequenceValidator;
 import opennlp.tools.util.TrainingParameters;
@@ -35,12 +42,6 @@ public class WordSegmenterME implements WordSegmenter {
      * The feature context generator.
      */
     protected WordSegContextGenerator contextGen;
-
-    /**
-     * Says whether a filter should be used to check whether a tag assignment is
-     * to a word outside of a closed class.
-     */
-    protected boolean useClosedClassTagsFilter = false;
 
     /**
      * The size of the beam to be used in determining the best sequence of pos
@@ -63,9 +64,24 @@ public class WordSegmenterME implements WordSegmenter {
      * beam size of 3.
      *
      * @param model
+     * @param contextGenerator context generator for ME
      */
     public WordSegmenterME(WordSegModel model, WordSegContextGenerator contextGenerator) {
-
+        init(model, contextGenerator);
+    }
+    
+    public WordSegmenterME(File modelFile) throws IOException {
+        this(modelFile, new DefaultWordSegContextGenerator());
+    }
+    
+    public WordSegmenterME(File modelFile, WordSegContextGenerator contextGenerator) throws IOException {
+        InputStream modelIn = new BufferedInputStream(new FileInputStream(modelFile));
+        WordSegModel model = new WordSegModel(modelIn);
+        
+        init(model, contextGenerator);
+    }
+    
+    private void init(WordSegModel model, WordSegContextGenerator contextGenerator){
         int beamSize = WordSegmenterME.DEFAULT_BEAM_SIZE;
 
         String beamSizeString = model.getManifestProperty(BeamSearch.BEAM_SIZE_PARAMETER);
@@ -87,7 +103,6 @@ public class WordSegmenterME implements WordSegmenter {
             this.model = new opennlp.tools.ml.BeamSearch<String>(beamSize,
                     model.getWordSegModel(), 0);
         }
-
     }
 
     /**
@@ -128,9 +143,10 @@ public class WordSegmenterME implements WordSegmenter {
             }
 
         }
-        
-        if(word.length() > 0)
+
+        if (word.length() > 0) {
             words.add(word);
+        }
 
         return words.toArray(new String[words.size()]);
     }
@@ -274,6 +290,38 @@ public class WordSegmenterME implements WordSegmenter {
             return new WordSegModel(languageCode, posModel, beamSize, manifestInfoEntries);
         } else {
             return new WordSegModel(languageCode, seqPosModel, manifestInfoEntries);
+        }
+    }
+
+    /**
+     * train maxent chinese word segmentation model
+     *
+     * @param corpusFile training file
+     * @param trainParams training paramters
+     * @param contextGenerator context generator for MaxEnt
+     * @param encoding encoding of training file
+     *
+     * @return MaxEnt word segmentation model
+     */
+    public static WordSegModel train(File corpusFile, TrainingParameters trainParams,
+            WordSegContextGenerator contextGenerator, String encoding) throws IOException {
+        WordSegModel model = null;
+        OutputStream modelOut = null;
+
+        try {
+            ObjectStream<String> lineStream = new PlainTextByLineStream(new FileInputStreamFactory(corpusFile), encoding);
+            ObjectStream<WordSegSample> sampleStream = new WordTagSampleStream(lineStream);
+
+            model = WordSegmenterME.train("zh", sampleStream, trainParams, contextGenerator);
+            return model;
+        } finally {
+            if (modelOut != null) {
+                try {
+                    modelOut.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
         }
     }
 
