@@ -10,8 +10,6 @@ import java.util.Properties;
 import opennlp.tools.ml.BeamSearch;
 import opennlp.tools.ml.model.MaxentModel;
 import opennlp.tools.ml.model.SequenceClassificationModel;
-import opennlp.tools.postag.POSTaggerFactory;
-import opennlp.tools.util.BaseToolFactory;
 import opennlp.tools.util.InvalidFormatException;
 import opennlp.tools.util.model.ArtifactSerializer;
 import opennlp.tools.util.model.BaseModel;
