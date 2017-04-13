@@ -165,7 +165,13 @@ public class WordSegContextGeneratorConf implements WordSegContextGenerator {
 
     @Override
     public String toString() {
-        return "WordSegContextGeneratorTemplate{" + "c_2Set=" + c_2Set + ", c_1Set=" + c_1Set + ", c0Set=" + c0Set + ", c1Set=" + c1Set + ", c2Set=" + c2Set + ", c_2c_1Set=" + c_2c_1Set + ", c_1c0Set=" + c_1c0Set + ", c0c1Set=" + c0c1Set + ", c1c2Set=" + c1c2Set + ", c_1c1Set=" + c_1c1Set + ", t_2Set=" + t_2Set + ", t_1Set=" + t_1Set + '}';
+        return "WordSegContextGeneratorConf{" + "c_2Set=" + c_2Set + ", c_1Set=" + c_1Set + 
+                ", c0Set=" + c0Set + ", c1Set=" + c1Set + ", c2Set=" + c2Set + 
+                ", c_2c_1Set=" + c_2c_1Set + ", c_1c0Set=" + c_1c0Set + 
+                ", c0c1Set=" + c0c1Set + ", c1c2Set=" + c1c2Set + 
+                ", c_1c1Set=" + c_1c1Set + ", t_2Set=" + t_2Set + 
+                ", t_1Set=" + t_1Set + ", c_2c0set=" + c_2c0set + ", c_1c0c1set=" + c_1c0c1set +
+                '}';
     }
 
 }
