@@ -86,6 +86,39 @@ public class WordSegSample {
     public String[][] getAddictionalContext() {
         return this.additionalContext;
     }
+    
+    public String[] toWords(){
+        String word = new String();
+        ArrayList<String> words = new ArrayList<String>();
+        for (int i = 0; i < tags.size(); i++) {
+            word += sentence.get(i);
+
+            if (tags.get(i).equals("S") || tags.get(i).equals("E")) {
+                words.add(word);
+                word = "";
+            }
+        }
+
+        if (word.length() > 0) {
+            words.add(word);
+        }
+
+        return words.toArray(new String[words.size()]);
+    }
+    
+    public String toSample(){
+        String sample = new String();
+        ArrayList<String> words = new ArrayList<String>();
+        for (int i = 0; i < tags.size(); i++) {
+            sample += sentence.get(i);
+
+            if (tags.get(i).equals("S") || tags.get(i).equals("E")) {
+                sample += " ";
+            }
+        }
+
+        return sample;
+    }
 
     @Override
     public String toString() {
