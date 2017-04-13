@@ -2,14 +2,17 @@ package com.kidden.tc.wordseg.maxent;
 
 import com.kidden.tc.wordseg.WordSegmenter;
 import java.io.BufferedInputStream;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -22,6 +25,7 @@ import opennlp.tools.ml.TrainerFactory.TrainerType;
 import opennlp.tools.ml.model.Event;
 import opennlp.tools.ml.model.MaxentModel;
 import opennlp.tools.ml.model.SequenceClassificationModel;
+import opennlp.tools.tokenize.WhitespaceTokenizer;
 import opennlp.tools.util.ObjectStream;
 import opennlp.tools.util.PlainTextByLineStream;
 import opennlp.tools.util.Sequence;
@@ -323,6 +327,29 @@ public class WordSegmenterME implements WordSegmenter {
                 }
             }
         }
+    }
+    
+    /**
+     * build dictionary from train corpus
+     *
+     * @param corpusFile
+     * @param encoding
+     * @throws IOException
+     */
+    public static HashSet<String> buildDictionary(File corpusFile, String encoding) throws IOException {
+        BufferedReader data = new BufferedReader(new InputStreamReader(new FileInputStream(corpusFile), encoding));
+        String sentence;
+        HashSet<String> dict = new HashSet<String>();
+        while ((sentence = data.readLine()) != null) {
+            String words[] = WhitespaceTokenizer.INSTANCE.tokenize(sentence);
+            for (String w : words) {
+                dict.add(w);
+            }
+        }
+
+        data.close();
+
+        return dict;
     }
 
 }
