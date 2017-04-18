@@ -1,14 +1,10 @@
 package com.kidden.tc.wordseg.maxent;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.HashSet;
-import opennlp.tools.tokenize.WhitespaceTokenizer;
 import opennlp.tools.util.ObjectStream;
 import opennlp.tools.util.PlainTextByLineStream;
 import opennlp.tools.util.eval.Evaluator;
@@ -32,6 +28,10 @@ public class WordSegEvaluator extends Evaluator<WordSegSample> {
     public WordSegEvaluator(WordSegmenterME tagger, WordSegEvaluationMonitor... listeners) {
         super(listeners);
         this.tagger = tagger;
+    }
+    
+    public void setMeasure(WordSegMeasure m){
+        this.measure = m;
     }
 
     /**
