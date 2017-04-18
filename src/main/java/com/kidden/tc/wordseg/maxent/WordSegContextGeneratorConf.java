@@ -26,7 +26,7 @@ public class WordSegContextGeneratorConf implements WordSegContextGenerator {
 
     private boolean c_2c0set;
     private boolean c_1c0c1set;
-    private boolean coprefix;
+    private boolean c0prefix;
 
     public WordSegContextGeneratorConf(Properties config) {
         c_2Set = (config.getProperty("feature.c_2", "true").equals("true"));
@@ -48,11 +48,29 @@ public class WordSegContextGeneratorConf implements WordSegContextGenerator {
         c_2c0set = (config.getProperty("feature.c_2c0", "true").equals("true"));
         c_1c0c1set = (config.getProperty("feature.c_1c0c1", "true").equals("true"));
         // TODO
-        coprefix = (config.getProperty("feature.c0pre", "true").equals("true"));
+        c0prefix = (config.getProperty("feature.c0pre", "true").equals("true"));
     }
 
     public String[] getContext(int index, String[] sequence, String[] priorDecisions, Object[] additionalContext) {
         return getContext(index, sequence, priorDecisions);
+    }
+    
+    private List<String> addC0Prefix(List<String> features, String c0){
+        List<String> result = new ArrayList<String>();
+        
+        for(String feature : features){
+            result.add(feature);
+            
+            int p = feature.indexOf("=");
+            String name = feature.substring(0, p);
+            String value = feature.substring(+1);
+            
+            String cof = c0+name + "=" + c0 + value;
+            
+            result.add(cof);
+        }
+        
+        return result;
     }
 
     public String[] getContext(int index, Object[] tokens, String[] tags) {
@@ -157,6 +175,9 @@ public class WordSegContextGeneratorConf implements WordSegContextGenerator {
                 features.add("c_1c0c1="+c_1+c0+c1);
             }
         }
+        
+        if(c0prefix)
+            features = addC0Prefix(features, c0);
 
         String[] contexts = features.toArray(new String[features.size()]);
 
