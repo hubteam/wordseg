@@ -1,5 +1,8 @@
 package com.kidden.tc.wordseg.maxent;
 
+import com.kidden.tc.wordseg.sighan.SighanRun;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
@@ -27,8 +30,25 @@ public class WordSegContextGeneratorConf implements WordSegContextGenerator {
     private boolean c_2c0set;
     private boolean c_1c0c1set;
     private boolean c0prefix;
+    
+    /**
+     * Load features conf from resource com/kidden/tc/wordseg/maxent/sighan/feature.properties
+     * 
+     * @throws IOException 
+     */
+    public WordSegContextGeneratorConf() throws IOException{
+        Properties featureConf = new Properties();
+        InputStream featureStream = WordSegContextGeneratorConf.class.getClassLoader().getResourceAsStream("com/kidden/tc/wordseg/maxent/sighan/feature.properties");
+        featureConf.load(featureStream);
+        
+        init(featureConf);
+    }
 
     public WordSegContextGeneratorConf(Properties config) {
+        init(config);
+    }
+    
+    private void init(Properties config){
         c_2Set = (config.getProperty("feature.c_2", "true").equals("true"));
         c_1Set = (config.getProperty("feature.c_1", "true").equals("true"));
         c0Set = (config.getProperty("feature.c0", "true").equals("true"));
@@ -51,6 +71,7 @@ public class WordSegContextGeneratorConf implements WordSegContextGenerator {
         c0prefix = (config.getProperty("feature.c0pre", "true").equals("true"));
     }
 
+    @Override
     public String[] getContext(int index, String[] sequence, String[] priorDecisions, Object[] additionalContext) {
         return getContext(index, sequence, priorDecisions);
     }
@@ -118,7 +139,7 @@ public class WordSegContextGeneratorConf implements WordSegContextGenerator {
 
             if (c_2 != null) {
                 if (c_2Set) {
-                    features.add("c_2" + c_2);
+                    features.add("c_2=" + c_2);
                 }
 
                 if (t_2Set) {
@@ -192,6 +213,7 @@ public class WordSegContextGeneratorConf implements WordSegContextGenerator {
                 ", c0c1Set=" + c0c1Set + ", c1c2Set=" + c1c2Set + 
                 ", c_1c1Set=" + c_1c1Set + ", t_2Set=" + t_2Set + 
                 ", t_1Set=" + t_1Set + ", c_2c0set=" + c_2c0set + ", c_1c0c1set=" + c_1c0c1set +
+                ", c0prefix=" + c0prefix +
                 '}';
     }
 
