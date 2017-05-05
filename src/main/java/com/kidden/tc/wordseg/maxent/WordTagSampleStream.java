@@ -28,7 +28,10 @@ public class WordTagSampleStream extends FilterObjectStream<String, WordSegSampl
      * an warning message is logged. Usually it does not matter if one of many
      * sentences is ignored.
      *
+     * @return 
+     * @throws java.io.IOException
      */
+    @Override
     public WordSegSample read() throws IOException {
         String sentence = samples.read();
 
