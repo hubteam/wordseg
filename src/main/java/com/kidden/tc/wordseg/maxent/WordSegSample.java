@@ -75,10 +75,18 @@ public class WordSegSample {
         }
     }
 
+    /**
+     * The Chinese characters array of sample
+     * @return 
+     */
     public String[] getSentence() {
         return sentence.toArray(new String[sentence.size()]);
     }
 
+    /**
+     * The positon tags for each Chinese character of the sample
+     * @return 
+     */
     public String[] getTags() {
         return tags.toArray(new String[tags.size()]);
     }
@@ -87,6 +95,10 @@ public class WordSegSample {
         return this.additionalContext;
     }
     
+    /**
+     * Convert sample to word array
+     * @return 
+     */
     public String[] toWords(){
         String word = new String();
         ArrayList<String> words = new ArrayList<String>();
@@ -106,6 +118,10 @@ public class WordSegSample {
         return words.toArray(new String[words.size()]);
     }
     
+    /**
+     * Convert sample to setence in which each word is seperated by whitespace
+     * @return 
+     */
     public String toSample(){
         String sample = new String();
         ArrayList<String> words = new ArrayList<String>();
